@@ -104,7 +104,7 @@ def test_render_draws_the_essay_somewhere_on_screen() -> None:
     win = FakeWindow()
     state = initial_state(random.Random(0))
     render(win, state)
-    essay_chars = [c for c in win.calls if c[0] == "addstr" and c[3] in ("@", "X")]
+    essay_chars = [c for c in win.calls if c[0] == "addstr" and c[3] in ("@@@", "XXX")]
     assert len(essay_chars) == 1
 
 
@@ -121,7 +121,7 @@ def test_crashed_essay_is_drawn_differently_from_a_flying_one() -> None:
             break
     render(win_crashed, crashed)
 
-    flying_chars = {c[3] for c in win_flying.calls if c[0] == "addstr" and c[3] in ("@", "X")}
-    crashed_chars = {c[3] for c in win_crashed.calls if c[0] == "addstr" and c[3] in ("@", "X")}
-    assert flying_chars == {"@"}
-    assert crashed_chars == {"X"}
+    flying_chars = {c[3] for c in win_flying.calls if c[0] == "addstr" and c[3] in ("@@@", "XXX")}
+    crashed_chars = {c[3] for c in win_crashed.calls if c[0] == "addstr" and c[3] in ("@@@", "XXX")}
+    assert flying_chars == {"@@@"}
+    assert crashed_chars == {"XXX"}

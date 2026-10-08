@@ -46,8 +46,8 @@ FLAP_KEY = ord(" ")
 RESTART_KEY = ord("r")
 QUIT_KEYS = (ord("q"), 27)  # 27 = Escape
 
-ESSAY_CHAR = "@"
-ESSAY_CRASHED_CHAR = "X"
+ESSAY_SPRITE = "@@@"
+ESSAY_CRASHED_SPRITE = "XXX"
 GRASS_CHAR = "#"
 
 
@@ -114,8 +114,8 @@ def render(win: ConsoleWindow, state: GameState) -> None:
                 if not row_is_clear(row, gap_top, gap_bottom):
                     _safe_addstr(win, row, col, GRASS_CHAR)
 
-    essay_char = ESSAY_CRASHED_CHAR if state.status is GameStatus.CRASHED else ESSAY_CHAR
-    _safe_addstr(win, pixel_to_row(state.essay.y), pixel_to_col(ESSAY_X), essay_char)
+    essay_sprite = ESSAY_CRASHED_SPRITE if state.status is GameStatus.CRASHED else ESSAY_SPRITE
+    _safe_addstr(win, pixel_to_row(state.essay.y), pixel_to_col(ESSAY_X), essay_sprite)
 
     _safe_addstr(win, 0, CONSOLE_COLS // 2 - 2, f"{state.score:>4}")
     if state.status is GameStatus.CRASHED:
