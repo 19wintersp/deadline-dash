@@ -7,9 +7,10 @@ render_console.py) or from a test -- either way it behaves identically,
 because it only ever looks at the GameState it's given.
 """
 
+import random
 from dataclasses import replace
 
-from .models import Essay, GameState, GameStatus, Grass
+from .models import Essay, GameState, GameStatus, Grass, Grasses
 from .obstacles import THEMES
 
 FIXED_DT = 1.0 / 60.0
@@ -29,12 +30,11 @@ GRASS_SPACING = 230.0
 GRASS_SPEED = 140.0  # px/s
 NUM_GRASS = 40  # pre-generated up front; see initial_state()
 
-
-def initial_state(rng, num_grass=NUM_GRASS):
+def initial_state(rng: random.Random, num_grass: int=NUM_GRASS) -> GameState:
     """A fresh game. The whole course is generated here, once, from `rng`
     -- step() itself never touches randomness, which is what keeps it
     exactly reproducible given the same starting state and flap sequence."""
-    grass = []
+    grass: list[Grass] = []
     x = SCREEN_WIDTH + 100.0
     for _ in range(num_grass):
         gap_y = rng.uniform(GRASS_GAP, GROUND_Y - GRASS_GAP)
@@ -49,24 +49,24 @@ def initial_state(rng, num_grass=NUM_GRASS):
     )
 
 
-def apply_gravity(essay, flap):
+def apply_gravity(essay: Essay, flap: bool) -> Essay:
     """One tick of vertical physics. A flap overrides velocity outright;
     otherwise gravity accelerates the essay downward."""
     velocity = FLAP_VELOCITY if flap else essay.velocity + GRAVITY * FIXED_DT
     return Essay(y=essay.y + velocity * FIXED_DT, velocity=velocity)
 
 
-def advance_grass(grass):
+def advance_grass(grass: Grasses) -> Grasses:
     """Move every patch of grass left by one tick's worth of GRASS_SPEED."""
     return tuple(replace(g, x=g.x - GRASS_SPEED * FIXED_DT) for g in grass)
 
 
-def out_of_bounds(essay):
+def out_of_bounds(essay: Essay) -> bool:
     """True if the essay has hit the ground or flown off the top."""
     return essay.y < 0 or essay.y + ESSAY_SIZE >= GROUND_Y
 
 
-def collides(essay, grass):
+def collides(essay: Essay, grass: Grasses) -> bool:
     """Axis-aligned bounding-box collision between the essay and any grass
     it currently overlaps horizontally. Deliberately not pixel-perfect
     collision: that would need image data inside this otherwise-pure
@@ -83,11 +83,11 @@ def collides(essay, grass):
     return False
 
 
-def score_passed_grass(grass, essay, score):
+def score_passed_grass(grass: Grasses, essay: Essay, score: int) -> tuple[Grasses, int]:
     """Mark any grass the essay has just fully passed as scored, and bump
     the score once per patch -- the `scored` flag is what stops a patch
     being counted twice."""
-    new_grass = []
+    new_grass: list[Grass] = []
     new_score = score
     for patch in grass:
         if not patch.scored and patch.x + GRASS_WIDTH < ESSAY_X:
@@ -98,7 +98,7 @@ def score_passed_grass(grass, essay, score):
     return tuple(new_grass), new_score
 
 
-def step(state, flap):
+def step(state: GameState, flap: bool) -> GameState:
     """Advance the game by one fixed tick. Once CRASHED, step() is a no-op
     forever -- that's deliberate and tested (see test_crashed_state_is_terminal)."""
     if state.status is GameStatus.CRASHED:

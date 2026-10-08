@@ -82,7 +82,7 @@ def test_a_patch_is_never_scored_twice() -> None:
     patch = Grass(
         x=ESSAY_X - GRASS_WIDTH - 1.0, gap_y=300.0, gap_height=150.0, theme="Old Court", scored=True
     )
-    grass, score = score_passed_grass((patch,), Essay(y=300.0, velocity=0.0), score=5)
+    _grass, score = score_passed_grass((patch,), Essay(y=300.0, velocity=0.0), score=5)
     assert score == 5
 
 

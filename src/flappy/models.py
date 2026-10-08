@@ -39,6 +39,9 @@ class Grass:
     scored: bool = False
 
 
+type Grasses = tuple[Grass, ...]
+
+
 @dataclass(frozen=True)
 class ObstacleTheme:
     """One flavour of grass -- see obstacles/__init__.py for the registry.
@@ -57,6 +60,6 @@ class GameState:
     """Everything the game needs to know at a single instant."""
 
     essay: Essay
-    grass: tuple[Grass, ...]
+    grass: Grasses
     score: int
     status: GameStatus
