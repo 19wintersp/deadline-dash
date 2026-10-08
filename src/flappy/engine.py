@@ -52,7 +52,7 @@ def initial_state(rng, num_grass=NUM_GRASS):
 def apply_gravity(essay, flap):
     """One tick of vertical physics. A flap overrides velocity outright;
     otherwise gravity accelerates the essay downward."""
-    velocity = FLAP_VELOCITY if flap else essay.velocity - GRAVITY * FIXED_DT
+    velocity = FLAP_VELOCITY if flap else essay.velocity + GRAVITY * FIXED_DT
     return Essay(y=essay.y + velocity * FIXED_DT, velocity=velocity)
 
 
