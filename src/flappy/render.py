@@ -118,7 +118,7 @@ def _draw_ground(world: pygame.Surface, scroll_phase: float) -> None:
     pygame.draw.rect(world, GROUND_COLOUR, rect)
     stripe_width = 20
     offset = int(scroll_phase) % stripe_width
-    x = -offset
+    x = offset
     while x < SCREEN_WIDTH:
         pygame.draw.rect(world, GROUND_STRIPE_COLOUR, (x, rect.top, stripe_width / 2, rect.height))
         x += stripe_width
