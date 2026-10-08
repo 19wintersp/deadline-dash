@@ -78,7 +78,7 @@ def collides(essay, grass):
             continue
         gap_top = patch.gap_y - patch.gap_height / 2
         gap_bottom = patch.gap_y + patch.gap_height / 2
-        if essay_top < gap_top and essay_bottom > gap_bottom:
+        if essay_top < gap_top or essay_bottom > gap_bottom:
             return True
     return False
 
