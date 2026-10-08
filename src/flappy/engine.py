@@ -74,7 +74,7 @@ def collides(essay, grass):
     essay_left, essay_right = ESSAY_X, ESSAY_X + ESSAY_SIZE
     essay_top, essay_bottom = essay.y, essay.y + ESSAY_SIZE
     for patch in grass:
-        if patch.x > essay_right or patch.x + GRASS_WIDTH < essay_left:
+        if patch.x >= essay_right or patch.x + GRASS_WIDTH <= essay_left:
             continue
         gap_top = patch.gap_y - patch.gap_height / 2
         gap_bottom = patch.gap_y + patch.gap_height / 2
