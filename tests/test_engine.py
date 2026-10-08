@@ -125,6 +125,14 @@ def test_initial_state_differs_for_different_seeds() -> None:
     assert a.grass != b.grass
 
 
+def test_initial_state_contains_differently_themed_grass_patches() -> None:
+    # ideally we could test whether the theme selection is random, but this is
+    # of course impossible. this test has a 2^-39 chance of a false positive
+    # failure, assuming the code is correct and works as it does as I write this
+    state = initial_state(random.Random())
+    assert len(set(map(lambda grass: grass.theme, state.grass))) > 1
+
+
 def test_a_full_game_from_a_fixed_seed_runs_without_error() -> None:
     """A smoke test that plays a deterministic game to completion (crash),
     always flapping."""
