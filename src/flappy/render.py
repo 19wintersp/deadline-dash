@@ -260,16 +260,28 @@ def render(screen: pygame.Surface, state: GameState) -> None:
     def _text_with_shadow(
         font: pygame.font.Font, text: str, colour: tuple[int, int, int]
     ) -> pygame.Surface:
-        shadow = font.render(text, True, TEXT_SHADOW)
-        main = font.render(text, True, colour)
-        combined = pygame.Surface(
-            (main.get_width() + 2, main.get_height() + 2), pygame.SRCALPHA
-        )
-        combined.blit(shadow, (0, 2))
-        combined.blit(shadow, (2, 0))
-        combined.blit(shadow, (2, 2))
-        combined.blit(shadow, (0, 0))
-        combined.blit(main, (1, 1))
+        lines = [
+            (
+                font.render(line, True, TEXT_SHADOW),
+                font.render(line, True, colour)
+            )
+            for line in text.splitlines()
+        ]
+
+        width = max(main.get_width() for _, main in lines) + 2
+        height = sum(main.get_height() for _, main in lines) + 2
+        combined = pygame.Surface((width, height), pygame.SRCALPHA)
+
+        y = 0
+        for shadow, main in lines:
+            x = (width - main.get_width()) / 2
+            combined.blit(shadow, (x + 0, y + 2))
+            combined.blit(shadow, (x + 2, y + 0))
+            combined.blit(shadow, (x + 2, y + 2))
+            combined.blit(shadow, (x + 0, y + 0))
+            combined.blit(main,   (x + 1, y + 1))
+            y += main.get_height()
+
         return combined
 
     score_font = pygame.font.SysFont(None, int(44 * RENDER_SCALE))
@@ -278,7 +290,12 @@ def render(screen: pygame.Surface, state: GameState) -> None:
 
     if crashed:
         big_font = pygame.font.SysFont(None, int(40 * RENDER_SCALE))
-        msg = _text_with_shadow(big_font, "Deaned -- press R to restart", TEXT_COLOUR)
+        msg = _text_with_shadow(
+            big_font,
+            "Here's the kicker –\nyou've not just lost;\nyou've been Deaned." +
+            "\n\nPress R to restart",
+            TEXT_COLOUR
+        )
         panel = pygame.Surface((msg.get_width() + 24, msg.get_height() + 16), pygame.SRCALPHA)
         panel.fill((255, 255, 255, 180))
         panel_rect = panel.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
